@@ -1,4 +1,5 @@
 import itertools
+import re
 from collections.abc import Iterable
 from collections.abc import Iterator
 from datetime import datetime
@@ -113,8 +114,11 @@ class GitlabConnector(LoadConnector, PollConnector):
             for mr_batch in _batch_gitlab_objects(merge_requests, self.batch_size):
                 doc_batch: list[Document] = []
                 for mr in mr_batch:
-                    mr.updated_at = datetime.strptime(
-                        mr.updated_at, "%Y-%m-%dT%H:%M:%S.%fZ"
+                    mr.updated_at = re.sub("Z$", "+00:00", mr.updated_at)
+                    mr.updated_at = (
+                        datetime.strptime(mr.updated_at, "%Y-%m-%dT%H:%M:%S.%f%z")
+                        .astimezone(timezone.utc)
+                        .replace(tzinfo=None)
                     )
                     if start is not None and mr.updated_at < start:
                         yield doc_batch
@@ -130,8 +134,11 @@ class GitlabConnector(LoadConnector, PollConnector):
             for issue_batch in _batch_gitlab_objects(issues, self.batch_size):
                 doc_batch = []
                 for issue in issue_batch:
-                    issue.updated_at = datetime.strptime(
-                        issue.updated_at, "%Y-%m-%dT%H:%M:%S.%fZ"
+                    issue.updated_at = re.sub("Z$", "+00:00", issue.updated_at)
+                    issue.updated_at = (
+                        datetime.strptime(issue.updated_at, "%Y-%m-%dT%H:%M:%S.%f%z")
+                        .astimezone(timezone.utc)
+                        .replace(tzinfo=None)
                     )
                     if start is not None and issue.updated_at < start:
                         yield doc_batch
