@@ -1,0 +1,17 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: danswer
+spec:
+  selector:
+    istio: internalapps-ingressgateway
+  servers:
+    - hosts:
+        - danswer.us-east-1.qa.msc.rokulabs.net
+      port:
+        name: https
+        number: 443
+        protocol: HTTPS
+      tls:
+        credentialName: danswer
+        mode: SIMPLE

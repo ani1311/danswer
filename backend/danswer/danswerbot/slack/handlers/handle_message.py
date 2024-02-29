@@ -128,6 +128,7 @@ def handle_message(
 
     document_set_names: list[str] | None = None
     persona = channel_config.persona if channel_config else None
+    logger.debug(f"Persona: {persona.name}")
     prompt = None
     if persona:
         document_set_names = [

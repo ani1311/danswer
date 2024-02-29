@@ -266,11 +266,15 @@ def process_message(
         client=client.web_client, channel_id=channel
     )
 
+    logger.debug(f"Processing message for channel name: {channel_name}, id: {channel}")
+
     engine = get_sqlalchemy_engine()
     with Session(engine) as db_session:
         slack_bot_config = get_slack_bot_config_for_channel(
             channel_name=channel_name, db_session=db_session
         )
+
+        logger.debug(f"Slack bot config name: {slack_bot_config.persona.name}")
 
         # Be careful about this default, don't want to accidentally spam every channel
         # Users should be able to DM slack bot in their private channels though

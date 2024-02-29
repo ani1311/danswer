@@ -66,8 +66,9 @@ def stream_answer_objects(
     default_chunk_size: int = CHUNK_SIZE,
     timeout: int = QA_TIMEOUT,
     bypass_acl: bool = False,
-    retrieval_metrics_callback: Callable[[RetrievalMetricsContainer], None]
-    | None = None,
+    retrieval_metrics_callback: (
+        Callable[[RetrievalMetricsContainer], None] | None
+    ) = None,
     rerank_metrics_callback: Callable[[RerankMetricsContainer], None] | None = None,
     llm_metrics_callback: Callable[[LLMMetricsContainer], None] | None = None,
 ) -> Iterator[
@@ -168,11 +169,11 @@ def stream_answer_objects(
 
     # Yield the list of LLM selected chunks for showing the LLM selected icons in the UI
     llm_relevance_filtering_response = LLMRelevanceFilterResponse(
-        relevant_chunk_indices=[
-            index for index, value in enumerate(llm_chunk_selection) if value
-        ]
-        if run_llm_chunk_filter
-        else []
+        relevant_chunk_indices=(
+            [index for index, value in enumerate(llm_chunk_selection) if value]
+            if run_llm_chunk_filter
+            else []
+        )
     )
     yield llm_relevance_filtering_response
 
@@ -240,6 +241,8 @@ def stream_answer_objects(
         db_session=db_session,
         commit=True,
     )
+
+    logger.debug(f"full prompt str: {full_prompt_str}")
 
     response_packets = (
         qa_model.answer_question_stream(
@@ -330,8 +333,9 @@ def get_search_answer(
     answer_generation_timeout: int = QA_TIMEOUT,
     enable_reflexion: bool = False,
     bypass_acl: bool = False,
-    retrieval_metrics_callback: Callable[[RetrievalMetricsContainer], None]
-    | None = None,
+    retrieval_metrics_callback: (
+        Callable[[RetrievalMetricsContainer], None] | None
+    ) = None,
     rerank_metrics_callback: Callable[[RerankMetricsContainer], None] | None = None,
     llm_metrics_callback: Callable[[LLMMetricsContainer], None] | None = None,
 ) -> OneShotQAResponse:

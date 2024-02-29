@@ -3,19 +3,21 @@ kind: PersistentVolumeClaim
 metadata:
   name: dynamic-pvc
 spec:
+  storageClassName: rokumesh-efs-burst
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 1Gi
+      storage: 100Gi
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: file-connector-pvc
 spec:
+  storageClassName: rokumesh-efs-burst
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 1Gi
+      storage: 100Gi

@@ -1,0 +1,15 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: danswer
+spec:
+  gateways:
+    - danswer
+  hosts:
+    - danswer.us-east-1.qa.msc.rokulabs.net
+  http:
+    - route:
+        - destination:
+            host: nginx-service
+            port:
+              number: 3000
