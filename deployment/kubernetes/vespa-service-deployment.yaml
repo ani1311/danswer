@@ -14,7 +14,7 @@ spec:
       protocol: TCP
       port: 8081
       targetPort: 8081
-  type: LoadBalancer
+  type: ClusterIP
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -34,30 +34,30 @@ spec:
         app: vespa
     spec:
       containers:
-      - name: vespa
-        image: vespaengine/vespa:8.277.17
-        imagePullPolicy: IfNotPresent
-        securityContext:
-          privileged: true
-          runAsUser: 0
-        ports:
-        - containerPort: 19071
-        - containerPort: 8081
-        readinessProbe:
-          httpGet:
-            path: /state/v1/health
-            port: 19071
-            scheme: HTTP
-        volumeMounts:
-        - name: vespa-storage
-          mountPath: /opt/vespa/var/
+        - name: vespa
+          image: vespaengine/vespa:8.277.17
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            privileged: true
+            runAsUser: 0
+          ports:
+            - containerPort: 19071
+            - containerPort: 8081
+          readinessProbe:
+            httpGet:
+              path: /state/v1/health
+              port: 19071
+              scheme: HTTP
+          volumeMounts:
+            - name: vespa-storage
+              mountPath: /opt/vespa/var/
   volumeClaimTemplates:
-  - metadata:
-      name: vespa-storage
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      resources:
-        requests:
-          # Adjust the storage request size as needed.
-          storage: 1Gi
+    - metadata:
+        name: vespa-storage
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            # Adjust the storage request size as needed.
+            storage: 100Gi

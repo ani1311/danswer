@@ -13,24 +13,31 @@ spec:
         app: background
     spec:
       containers:
-      - name: background
-        image: danswer/danswer-backend:latest
-        imagePullPolicy: IfNotPresent
-        command: ["/usr/bin/supervisord"]
-        # There are some extra values since this is shared between services
-        # There are no conflicts though, extra env variables are simply ignored
-        envFrom:
-        - configMapRef:
-            name: env-configmap
-        volumeMounts:
-        - name: dynamic-storage
-          mountPath: /home/storage
-        - name: file-connector-storage
-          mountPath: /home/file_connector_storage
+        - name: background
+          image: aalur278/danswer:latest10
+          # resources:
+          #   requests:
+          #     cpu: "10m"
+          #     memory: "100Mi"
+          #   limits:
+          #     cpu: "100"
+          #     memory: "200Mi"
+          imagePullPolicy: IfNotPresent
+          command: ["/usr/bin/supervisord"]
+          # There are some extra values since this is shared between services
+          # There are no conflicts though, extra env variables are simply ignored
+          envFrom:
+            - configMapRef:
+                name: env-configmap
+          volumeMounts:
+            - name: dynamic-storage
+              mountPath: /home/storage
+            - name: file-connector-storage
+              mountPath: /home/file_connector_storage
       volumes:
-      - name: dynamic-storage
-        persistentVolumeClaim:
-          claimName: dynamic-pvc
-      - name: file-connector-storage
-        persistentVolumeClaim:
-          claimName: file-connector-pvc
+        - name: dynamic-storage
+          persistentVolumeClaim:
+            claimName: dynamic-pvc
+        - name: file-connector-storage
+          persistentVolumeClaim:
+            claimName: file-connector-pvc

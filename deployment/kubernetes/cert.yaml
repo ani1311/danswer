@@ -1,0 +1,19 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: danswer
+spec:
+  secretName: danswer
+  dnsNames:
+    - danswer.us-east-1.qa.msc.rokulabs.net
+  duration: 4320h0m0s
+  isCA: false
+  issuerRef:
+    kind: ClusterIssuer
+    name: letsencrypt-prod
+  renewBefore: 480h0m0s
+  secretTemplate:
+    annotations:
+      kubed.appscode.com/sync: cert-manager-tls=istio-system
+  usages:
+    - server auth
